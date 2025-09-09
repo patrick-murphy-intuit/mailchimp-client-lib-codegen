@@ -1,1830 +1,1237 @@
 {
-    "openapi": "3.1.0",
-    "info": {
-        "title": "Mandrill API",
-        "version": "1.0.0"
+  "x-doc-structure": {
+    "resources": {
+      "allowlists": {
+        "title": "Allowlists",
+        "description": "Add, list, or delete from your Rejection Allowlist.",
+        "paths": ["/allowlists/add", "/allowlists/list", "/allowlists/delete"]
+      },
+      "exports": {
+        "title": "Exports",
+        "description": "Start an export, or get information on export jobs in progress.",
+        "paths": [
+          "/exports/info",
+          "/exports/list",
+          "/exports/rejects",
+          "/exports/whitelist",
+          "/exports/allowlist",
+          "/exports/activity"
+        ]
+      },
+      "inbound": {
+        "title": "Inbound",
+        "description": "Manage your inbound domains and routes.",
+        "paths": [
+          "/inbound/domains",
+          "/inbound/add-domain",
+          "/inbound/check-domain",
+          "/inbound/delete-domain",
+          "/inbound/routes",
+          "/inbound/add-route",
+          "/inbound/update-route",
+          "/inbound/delete-route",
+          "/inbound/send-raw"
+        ]
+      },
+      "ips": {
+        "title": "IPs",
+        "description": "Request and manage Dedicated IPs for your account, and set up reverse DNS.",
+        "paths": [
+          "/ips/list",
+          "/ips/info",
+          "/ips/provision",
+          "/ips/start-warmup",
+          "/ips/cancel-warmup",
+          "/ips/set-pool",
+          "/ips/delete",
+          "/ips/list-pools",
+          "/ips/pool-info",
+          "/ips/create-pool",
+          "/ips/delete-pool",
+          "/ips/check-custom-dns",
+          "/ips/set-custom-dns"
+        ]
+      },
+      "messages": {
+        "title": "Messages",
+        "description": "Send, schedule, or get information on your emails.",
+        "paths": [
+          "/messages/send",
+          "/messages/send-template",
+          "/messages/search",
+          "/messages/search-time-series",
+          "/messages/info",
+          "/messages/content",
+          "/messages/parse",
+          "/messages/send-raw",
+          "/messages/list-scheduled",
+          "/messages/cancel-scheduled",
+          "/messages/reschedule"
+        ]
+      },
+      "metadata": {
+        "title": "Metadata",
+        "description": "Manage your custom metadata fields in your account.",
+        "paths": [
+          "/metadata/list",
+          "/metadata/add",
+          "/metadata/update",
+          "/metadata/delete"
+        ]
+      },
+      "rejects": {
+        "title": "Rejects",
+        "description": "Add, list, or delete from your Rejection Denylist.",
+        "paths": ["/rejects/add", "/rejects/list", "/rejects/delete"]
+      },
+      "senders": {
+        "title": "Senders",
+        "description": "Manage or get information about your sending domains.",
+        "paths": [
+          "/senders/list",
+          "/senders/domains",
+          "/senders/add-domain",
+          "/senders/check-domain",
+          "/senders/verify-domain",
+          "/senders/info",
+          "/senders/time-series"
+        ]
+      },
+      "subaccounts": {
+        "title": "Subaccounts",
+        "description": "Manage your subaccounts, including the abilitiy to pause and resume sending.",
+        "paths": [
+          "/subaccounts/list",
+          "/subaccounts/add",
+          "/subaccounts/info",
+          "/subaccounts/update",
+          "/subaccounts/delete",
+          "/subaccounts/pause",
+          "/subaccounts/resume"
+        ]
+      },
+      "tags": {
+        "title": "Tags",
+        "description": "List, delete, or get information on your Tags and their sending statistics.",
+        "paths": [
+          "/tags/list",
+          "/tags/delete",
+          "/tags/info",
+          "/tags/time-series",
+          "/tags/all-time-series"
+        ]
+      },
+      "templates": {
+        "title": "Templates",
+        "description": "Manage the Templates in your account.",
+        "paths": [
+          "/templates/add",
+          "/templates/info",
+          "/templates/update",
+          "/templates/publish",
+          "/templates/delete",
+          "/templates/list",
+          "/templates/time-series",
+          "/templates/render"
+        ]
+      },
+      "urls": {
+        "title": "URLs",
+        "description": "Manage your tracking domains. Some of these endpoints may be deprecated.",
+        "paths": [
+          "/urls/list",
+          "/urls/search",
+          "/urls/time-series",
+          "/urls/tracking-domains",
+          "/urls/add-tracking-domain",
+          "/urls/check-tracking-domain"
+        ]
+      },
+      "users": {
+        "title": "Users",
+        "description": "Get information about your account, or ping Transactional.",
+        "paths": [
+          "/users/info",
+          "/users/ping",
+          "/users/ping2",
+          "/users/senders"
+        ]
+      },
+      "webhooks": {
+        "title": "Webhooks",
+        "description": "Manage the webhooks in your account.",
+        "paths": [
+          "/webhooks/list",
+          "/webhooks/add",
+          "/webhooks/info",
+          "/webhooks/update",
+          "/webhooks/delete"
+        ]
+      },
+      "whitelists": {
+        "title": "Whitelists",
+        "description": "Add, list, or delete from your Rejection Allowlist. These endpoints are being replaced with a series of functionally identical endpoints called /allowlists.",
+        "paths": ["/whitelists/add", "/whitelists/list", "/whitelists/delete"]
+      }
+    }
+  },
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.59",
+    "title": "Mailchimp Transactional API",
+    "contact": {
+      "name": "API Support",
+      "email": "apihelp@mailchimp.com"
     },
-    "servers": [
-        {
-            "url": "https://mandrillapp.com/api/1.0",
-            "description": "Mandrill API v1.0"
-        }
-    ],
-    "paths": {
-        "/messages/send.json": {
-            "post": {
-                "tags": [
-                    "Messages"
-                ],
-                "summary": "Send a new transactional message through the Transactional API.",
-                "description": "Send a new transactional message through Mandrill\n\n<table class=\"simple top30 errors\">\n     <thead><tr><th colspan=\"1\">Note</th></tr></thead>\n     <tbody>\n         <tr>\n             <td class=\"param-desc\">\n                 If you signed up for a Mandrill account on or after December 1st, 2015, you must add SPF and DKIM records and verify ownership of your sending domains before you can send email through your account. Mandrill will not send any email from unverified domains or domains without valid SPF and DKIM records, including public domains like gmail.com, yahoo.com, and more.<br><br>Custom signing domains are only available to Mandrill accounts created before December 1st, 2015. If you signed up for a new Mandrill account on or after December 1st, 2015, the signing_domain parameter will be ignored.<br><br>Mail sent from unverified domains or domains without valid SPF and DKIM records will be rejected with the reject_reason, unsigned.<br><br>Learn more about <a href=\"https://mandrill.zendesk.com/hc/en-us/articles/360039236053-About-SPF-and-DKIM\">SPF and DKIM</a>, and <a href=\"https://mandrill.zendesk.com/hc/en-us/articles/360039236193-About-Domain-Verification\">domain verification</a>\n             </td>\n         </tr>\n     </tbody>\n </table>",
-                "operationId": "messages_send",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "allOf": [
-                                    {
-                                        "required": [
-                                            "key",
-                                            "message"
-                                        ],
-                                        "properties": {
-                                            "key": {
-                                                "$ref": "#/components/schemas/ApiKey",
-                                                "description": "a valid API key"
-                                            },
-                                            "message": {
-                                                "$ref": "#/components/schemas/MessagesRequestComponent",
-                                                "description": "the information on the message to send"
-                                            },
-                                            "async": {
-                                                "description": "enable a background sending mode that is optimized for bulk sending. In async mode, messages/send will immediately return a status of \"queued\" for every recipient. To handle rejections when sending in async mode, set up a webhook for the 'reject' event. Defaults to false for messages with no more than 10 recipients; messages with more than 10 recipients are always sent asynchronously, regardless of the value of async.",
-                                                "type": [
-                                                    "boolean",
-                                                    "null"
-                                                ],
-                                                "example": "false"
-                                            },
-                                            "ip_pool": {
-                                                "description": "the name of the dedicated ip pool that should be used to send the message. If you do not have any dedicated IPs, this parameter has no effect. If you specify a pool that does not exist, your default pool will be used instead.",
-                                                "type": "string",
-                                                "example": "false"
-                                            },
-                                            "send_at": {
-                                                "description": "when this message should be sent as a UTC timestamp in YYYY-MM-DD HH:MM:SS format. If you specify a time in the past, the message will be sent immediately; for future dates, you're limited to one year from the date of scheduling.",
-                                                "type": "string",
-                                                "format": "date-time",
-                                                "example": "false"
-                                            }
-                                        },
-                                        "type": "object"
-                                    }
-                                ]
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "an array of objects for each recipient containing the key \"email\" with the email address, and details of the message status for that recipient",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/MessagesSendResponse"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Invalid_Key: Invalid API key",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "402": {
-                        "description": "MC_Exception_PaymentRequired: Payment required",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Unknown_Subaccount: Subaccount not found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+    "x-permalink": "https://github.com/mailchimp/mailchimp-client-lib-codegen/blob/main/spec/transactional.json"
+  },
+  "host": "mandrillapp.com",
+  "basePath": "/api/1.0",
+  "schemes": ["https"],
+  "consumes": ["application/json"],
+  "produces": [
+    "application/json",
+    "application/x-php",
+    "application/x-yaml; charset=utf-8"
+  ],
+  "paths": {
+    "/messages/send": {
+      "post": {
+        "x-custom-config": {
+          "methodNameCamel": "send",
+          "methodNameSnake": "send"
         },
-        "/messages/send-template.json": {
-            "post": {
-                "tags": [
-                    "Messages"
-                ],
-                "summary": "Send a new transactional message using a template",
-                "description": "Send a new transactional message using a template. If you signed up for a Mandrill account on or after December 1st, 2015, you must add SPF and DKIM records and verify ownership of your sending domains before you can send email through your account. Mandrill will not send any email from unverified domains or domains without valid SPF and DKIM records, including public domains like gmail.com, yahoo.com, and more. Custom signing domains are only available to Mandrill accounts created before December 1st, 2015. If you signed up for a new Mandrill account on or after December 1st, 2015, the signing_domain parameter will be ignored. Mail sent from unverified domains or domains without valid SPF and DKIM records will be rejected with the reject_reason, unsigned.",
-                "operationId": "messages_send_template",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "allOf": [
-                                    {
-                                        "required": [
-                                            "key",
-                                            "template_name",
-                                            "template_content",
-                                            "message"
-                                        ],
-                                        "properties": {
-                                            "key": {
-                                                "$ref": "#/components/schemas/ApiKey",
-                                                "description": "a valid API key"
-                                            },
-                                            "template_name": {
-                                                "description": "the immutable slug of a template that exists in the user's account. Make sure you don't use the template name as this one might change.",
-                                                "type": "string",
-                                                "example": "\"example-template\""
-                                            },
-                                            "template_content": {
-                                                "description": "an array of template content to send. Each item in the array should be a struct with two keys - name: the name of the content block to set the content for, and content: the actual content to put into the block",
-                                                "type": "array",
-                                                "items": {
-                                                    "properties": {
-                                                        "name": {
-                                                            "description": "the name of the mc:edit editable region to inject into",
-                                                            "type": "string",
-                                                            "example": "\"example-template\""
-                                                        },
-                                                        "content": {
-                                                            "description": "the content to inject",
-                                                            "type": "string",
-                                                            "example": "\"example-template\""
-                                                        }
-                                                    },
-                                                    "type": "object"
-                                                },
-                                                "example": "\"example-template\""
-                                            },
-                                            "message": {
-                                                "$ref": "#/components/schemas/MessagesRequestComponent",
-                                                "description": "the other information on the message to send - same as /messages/send, but without the html content"
-                                            },
-                                            "async": {
-                                                "description": "enable a background sending mode that is optimized for bulk sending. In async mode, messages/send will immediately return a status of \"queued\" for every recipient. To handle rejections when sending in async mode, set up a webhook for the 'reject' event. Defaults to false for messages with no more than 10 recipients; messages with more than 10 recipients are always sent asynchronously, regardless of the value of async.",
-                                                "type": [
-                                                    "boolean",
-                                                    "null"
-                                                ],
-                                                "example": "\"example-template\""
-                                            },
-                                            "ip_pool": {
-                                                "description": "the name of the dedicated ip pool that should be used to send the message. If you do not have any dedicated IPs, this parameter has no effect. If you specify a pool that does not exist, your default pool will be used instead.",
-                                                "type": "string",
-                                                "example": "\"example-template\""
-                                            },
-                                            "send_at": {
-                                                "description": "when this message should be sent as a UTC timestamp in YYYY-MM-DD HH:MM:SS format. If you specify a time in the past, the message will be sent immediately; for future dates, you're limited to one year from the date of scheduling.",
-                                                "type": "string",
-                                                "format": "date-time",
-                                                "example": "\"example-template\""
-                                            }
-                                        },
-                                        "type": "object"
-                                    }
-                                ]
-                            }
-                        }
-                    }
+        "summary": "Send new message",
+        "description": "Send a new transactional message through the Transactional API.",
+        "operationId": "postMessagesSend",
+        "tags": ["messages"],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": ["key", "message"],
+              "properties": {
+                "key": {
+                  "type": "string",
+                  "description": "a valid api key"
                 },
-                "responses": {
-                    "200": {
-                        "description": "Per-recipient send results",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/MessagesSendResponse"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Invalid_Key: Invalid API key",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "402": {
-                        "description": "MC_Exception_PaymentRequired: Payment required",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Error 404",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "oneOf": [
-                                        {
-                                            "$ref": "#/components/schemas/ErrorResponse",
-                                            "description": "Unknown_Template: Template not found"
-                                        },
-                                        {
-                                            "$ref": "#/components/schemas/ErrorResponse",
-                                            "description": "Unknown_Subaccount: Subaccount not found"
-                                        }
-                                    ]
-                                }
-                            }
-                        }
-                    }
-                },
-                "x-readonly": true
-            }
-        },
-        "/messages/send-raw.json": {
-            "post": {
-                "tags": [
-                    "Messages"
-                ],
-                "summary": "Send a raw MIME message through Mandrill",
-                "description": "Send a raw MIME document for a message, and send it exactly as if it were sent through Mandrill's SMTP servers.",
-                "operationId": "messages_send_raw",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "allOf": [
-                                    {
-                                        "required": [
-                                            "key",
-                                            "raw_message"
-                                        ],
-                                        "properties": {
-                                            "key": {
-                                                "$ref": "#/components/schemas/ApiKey",
-                                                "description": "a valid API key"
-                                            },
-                                            "raw_message": {
-                                                "description": "the full MIME document of an email message",
-                                                "type": "string",
-                                                "example": "\"From: sender@example.com\\nTo: recipient.email@example.com\\nSubject: Some Subject\\n\\nSome content.\""
-                                            },
-                                            "from_email": {
-                                                "description": "optionally define the sender address - otherwise we'll use the address found in the provided headers",
-                                                "type": [
-                                                    "string",
-                                                    "null"
-                                                ],
-                                                "format": "email",
-                                                "example": "\"From: sender@example.com\\nTo: recipient.email@example.com\\nSubject: Some Subject\\n\\nSome content.\""
-                                            },
-                                            "from_name": {
-                                                "description": "optionally define the sender alias",
-                                                "example": "\"From: sender@example.com\\nTo: recipient.email@example.com\\nSubject: Some Subject\\n\\nSome content.\"",
-                                                "oneOf": [
-                                                    {
-                                                        "type": "string"
-                                                    },
-                                                    {
-                                                        "type": "null"
-                                                    }
-                                                ]
-                                            },
-                                            "to": {
-                                                "description": "optionally define the recipient to receive the message - otherwise we'll use the To, Cc, and Bcc headers provided in the document",
-                                                "type": "array",
-                                                "items": {
-                                                    "type": "string",
-                                                    "format": "email"
-                                                },
-                                                "example": [
-                                                    "recipient.email@example.com"
-                                                ]
-                                            },
-                                            "async": {
-                                                "description": "enable a background sending mode that is optimized for bulk sending. In async mode, messages/send will immediately return a status of \"queued\" for every recipient. To handle rejections when sending in async mode, set up a webhook for the 'reject' event. Defaults to false for messages with no more than 10 recipients; messages with more than 10 recipients are always sent asynchronously, regardless of the value of async.",
-                                                "type": [
-                                                    "boolean",
-                                                    "null"
-                                                ],
-                                                "example": "\"From: sender@example.com\\nTo: recipient.email@example.com\\nSubject: Some Subject\\n\\nSome content.\""
-                                            },
-                                            "ip_pool": {
-                                                "description": "the name of the dedicated ip pool that should be used to send the message. If you do not have any dedicated IPs, this parameter has no effect. If you specify a pool that does not exist, your default pool will be used instead.",
-                                                "type": "string",
-                                                "example": "\"From: sender@example.com\\nTo: recipient.email@example.com\\nSubject: Some Subject\\n\\nSome content.\""
-                                            },
-                                            "send_at": {
-                                                "description": "when this message should be sent as a UTC timestamp in YYYY-MM-DD HH:MM:SS format. If you specify a time in the past, the message will be sent immediately; for future dates, you're limited to one year from the date of scheduling.",
-                                                "type": "string",
-                                                "format": "date-time",
-                                                "example": "\"From: sender@example.com\\nTo: recipient.email@example.com\\nSubject: Some Subject\\n\\nSome content.\""
-                                            },
-                                            "return_path_domain": {
-                                                "description": "a custom domain to use for the messages' return-path",
-                                                "type": [
-                                                    "string",
-                                                    "null"
-                                                ],
-                                                "example": null
-                                            }
-                                        },
-                                        "type": "object"
-                                    }
-                                ]
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Per-recipient send results",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/MessagesSendResponse"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Invalid_Key: Invalid API key",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "402": {
-                        "description": "MC_Exception_PaymentRequired: Payment required",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Unknown_Subaccount: Subaccount not found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    }
-                },
-                "x-readonly": true
-            }
-        },
-        "/users/info.json": {
-            "post": {
-                "tags": [
-                    "Users"
-                ],
-                "summary": "Return the information about the API-connected user",
-                "description": "Returns user account information including username, reputation, quota, and historical sending stats",
-                "operationId": "users_info",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/ApiKey"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "User account information and aggregate sending statistics",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/User"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Invalid API key",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    }
-                },
-                "x-readonly": true
-            }
-        },
-        "/users/ping.json": {
-            "post": {
-                "tags": [
-                    "Users"
-                ],
-                "summary": "Validate an API key and respond to a ping",
-                "description": "Returns 'PONG!'.",
-                "operationId": "users_ping",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/ApiKey"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "The string 'PONG!'",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "string",
-                                    "const": "PONG!"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Invalid API key",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    }
-                },
-                "x-readonly": true
-            }
-        },
-        "/users/ping2.json": {
-            "post": {
-                "tags": [
-                    "Users"
-                ],
-                "summary": "Validate an API key and respond to a ping (strict JSON parser version)",
-                "description": "Validate an API key and respond to a ping (strict JSON parser version)",
-                "operationId": "users_ping2",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/ApiKey"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Static JSON payload with PING: PONG!",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "const": {
-                                        "PING": "PONG!"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Invalid API key",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    }
-                },
-                "x-readonly": true
-            }
-        },
-        "/users/senders.json": {
-            "post": {
-                "tags": [
-                    "Users"
-                ],
-                "summary": "Return the senders that have tried to use this account",
-                "description": "Returns an array of sender data for each sending address used by the account, both verified and unverified",
-                "operationId": "users_senders",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/ApiKey"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Array of sender information with aggregate statistics",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/Sender"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Invalid API key",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    }
-                },
-                "x-readonly": true
-            }
-        },
-        "/users/test503.json": {
-            "post": {
-                "tags": [
-                    "Users"
-                ],
-                "summary": "Test endpoint for 503 Service Unavailable response",
-                "description": "This API call can be used for testing 503 Service Unavailable responses",
-                "operationId": "users_test503",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/ApiKey"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "503": {
-                        "description": "Service Unavailable (test response)",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Invalid API key",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    }
-                },
-                "x-readonly": true
-            }
-        },
-        "/webhooks/list.json": {
-            "post": {
-                "tags": [
-                    "Webhooks"
-                ],
-                "summary": "Get the list of all webhooks",
-                "description": "Get the list of all webhooks defined for this account",
-                "operationId": "webhooks_list",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/ApiKey"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Array of webhook configurations",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/WebhookResponse"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Invalid API key",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    }
-                },
-                "x-readonly": true
-            }
-        },
-        "/webhooks/add.json": {
-            "post": {
-                "tags": [
-                    "Webhooks"
-                ],
-                "summary": "Add a new webhook",
-                "description": "Create a new webhook to receive event notifications",
-                "operationId": "webhooks_add",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/AddWebhookRequest"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "The created webhook configuration",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/WebhookResponse"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Invalid API key",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/webhooks/info.json": {
-            "post": {
-                "tags": [
-                    "Webhooks"
-                ],
-                "summary": "Get webhook information",
-                "description": "Get the data about an existing webhook",
-                "operationId": "webhooks_info",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/WebhookIdRequest"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Webhook information",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/WebhookResponse"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Invalid API key",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Unknown webhook",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    }
-                },
-                "x-readonly": true
-            }
-        },
-        "/webhooks/update.json": {
-            "post": {
-                "tags": [
-                    "Webhooks"
-                ],
-                "summary": "Update an existing webhook",
-                "description": "Update the configuration of an existing webhook",
-                "operationId": "webhooks_update",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/UpdateWebhookRequest"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Updated webhook configuration",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/WebhookResponse"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Invalid API key",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Unknown webhook",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/webhooks/delete.json": {
-            "post": {
-                "tags": [
-                    "Webhooks"
-                ],
-                "summary": "Delete an existing webhook",
-                "description": "Remove a webhook from the account",
-                "operationId": "webhooks_delete",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/WebhookIdRequest"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Deleted webhook configuration",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/WebhookResponse"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Invalid API key",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Unknown webhook",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    },
-    "components": {
-        "schemas": {
-            "ApiKey": {
-                "description": "API key field included in request bodies.",
-                "required": [
-                    "key"
-                ],
-                "properties": {
-                    "key": {
-                        "description": "A valid Mandrill API key",
-                        "type": "string",
-                        "example": "ONzNrsmbtNXoIKyfPmjnig"
-                    }
-                },
-                "type": "object",
-                "example": {
-                    "key": "ONzNrsmbtNXoIKyfPmjnig"
-                }
-            },
-            "ErrorResponse": {
-                "description": "Standard error payload returned on API errors.",
-                "required": [
-                    "status",
-                    "code",
-                    "name",
-                    "message"
-                ],
-                "properties": {
-                    "status": {
-                        "description": "Status of the response, typically \"error\"",
-                        "type": "string"
-                    },
-                    "code": {
-                        "description": "Numeric error code",
-                        "type": "integer"
-                    },
-                    "name": {
-                        "description": "Machine-friendly error name",
-                        "type": "string"
-                    },
-                    "message": {
-                        "description": "Human-readable error message",
-                        "type": "string"
-                    }
-                },
-                "type": "object",
-                "example": {
-                    "status": "error",
-                    "code": -2,
-                    "name": "ValidationError",
-                    "message": "Validation error: {\\\"url\\\":\\\"Not a valid URL\\\"}"
-                }
-            },
-            "MergeVar": {
-                "title": "MergeVar",
-                "description": "Merge variable definition",
-                "properties": {
-                    "name": {
-                        "description": "Merge variable name (case-insensitive, may not start with _)",
-                        "type": "string",
-                        "example": "merge1"
-                    },
-                    "content": {
-                        "description": "Content for the merge variable",
-                        "type": "string",
-                        "example": "merge1 content"
-                    }
-                },
-                "type": "object"
-            },
-            "StatsWindow": {
-                "description": "Aggregate sending statistics for a time window",
-                "properties": {
-                    "sent": {
-                        "description": "Number of emails sent",
-                        "type": "integer"
-                    },
-                    "hard_bounces": {
-                        "description": "Number of emails that hard bounced",
-                        "type": "integer"
-                    },
-                    "soft_bounces": {
-                        "description": "Number of emails that soft bounced",
-                        "type": "integer"
-                    },
-                    "rejects": {
-                        "description": "Number of emails rejected",
-                        "type": "integer"
-                    },
-                    "complaints": {
-                        "description": "Number of spam complaints",
-                        "type": "integer"
-                    },
-                    "unsubs": {
-                        "description": "Number of unsubscribe requests",
-                        "type": "integer"
-                    },
-                    "opens": {
-                        "description": "Number of times emails were opened",
-                        "type": "integer"
-                    },
-                    "unique_opens": {
-                        "description": "Number of unique opens",
-                        "type": "integer"
-                    },
-                    "clicks": {
-                        "description": "Number of tracked URL clicks",
-                        "type": "integer"
-                    },
-                    "unique_clicks": {
-                        "description": "Number of unique clicks",
-                        "type": "integer"
-                    }
-                },
-                "type": "object"
-            },
-            "MessagesRequestComponent": {
-                "title": "Message",
-                "description": "Mandrill message payload for transactional email",
-                "properties": {
-                    "is_sms": {
-                        "type": [
-                            "boolean",
-                            "null"
-                        ],
-                        "example": true
-                    },
+                "message": {
+                  "type": "object",
+                  "description": "the information on the message to send",
+                  "properties": {
                     "html": {
-                        "description": "the full HTML content to be sent",
-                        "type": [
-                            "string",
-                            "null"
-                        ]
+                      "type": "string",
+                      "description": "the full HTML content to be sent"
                     },
                     "text": {
-                        "description": "optional full text content to be sent",
-                        "type": [
-                            "string",
-                            "null"
-                        ]
+                      "type": "string",
+                      "description": "optional full text content to be sent"
                     },
                     "subject": {
-                        "description": "the message subject",
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "maxLength": 998
+                      "type": "string",
+                      "description": "the message subject"
                     },
                     "from_email": {
-                        "description": "the sender email address",
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "format": "email",
-                        "example": "message.from@example.com"
+                      "type": "string",
+                      "description": "the sender email address",
+                      "format": "email"
                     },
                     "from_name": {
-                        "description": "optional from name to be used",
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "example": "Example Name"
+                      "type": "string",
+                      "description": "optional from name to be used"
                     },
                     "to": {
-                        "description": "an array of recipient information.",
-                        "type": "array",
-                        "items": {
-                            "properties": {
-                                "email": {
-                                    "description": "The email address of the recipient",
-                                    "type": "string",
-                                    "format": "email",
-                                    "example": "to.email@example.com"
-                                },
-                                "name": {
-                                    "description": "The optional display name to use for the recipient",
-                                    "type": [
-                                        "string",
-                                        "null"
-                                    ],
-                                    "example": "Recipient Name"
-                                },
-                                "type": {
-                                    "description": "the header type to use for the recipient, defaults to \"to\" if not provided Possible values: \"to\", \"cc\", or \"bcc\".",
-                                    "type": [
-                                        "string",
-                                        "null"
-                                    ],
-                                    "default": "to",
-                                    "enum": [
-                                        "to",
-                                        "cc",
-                                        "bcc"
-                                    ]
-                                }
-                            },
-                            "type": "object"
+                      "type": "array",
+                      "description": "an array of recipient information.",
+                      "items": {
+                        "type": "object",
+                        "description": "a single recipient's information",
+                        "required": ["email"],
+                        "properties": {
+                          "email": {
+                            "type": "string",
+                            "description": "the email address of the recipient",
+                            "format": "email"
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "the optional display name to use for the recipient"
+                          },
+                          "type": {
+                            "type": "string",
+                            "description": "the header type to use for the recipient, defaults to \"to\" if not provided",
+                            "enum": ["to", "cc", "bcc"]
+                          }
                         }
+                      }
                     },
                     "headers": {
-                        "description": "optional extra headers to add to the message (most headers are allowed)",
-                        "type": "object"
+                      "type": "object",
+                      "description": "optional extra headers to add to the message (most headers are allowed)"
                     },
                     "important": {
-                        "description": "whether or not this message is important, and should be delivered ahead of non-important messages",
-                        "type": [
-                            "boolean",
-                            "null"
-                        ]
+                      "type": "boolean",
+                      "description": "whether or not this message is important, and should be delivered ahead of non-important messages"
                     },
                     "track_opens": {
-                        "description": "whether or not to turn on open tracking for the message",
-                        "type": [
-                            "boolean",
-                            "null"
-                        ]
+                      "type": "boolean",
+                      "description": "whether or not to turn on open tracking for the message"
                     },
                     "track_clicks": {
-                        "description": "whether or not to turn on click tracking for the message",
-                        "type": [
-                            "boolean",
-                            "null"
-                        ]
+                      "type": "boolean",
+                      "description": "whether or not to turn on click tracking for the message"
                     },
                     "auto_text": {
-                        "description": "whether or not to automatically generate a text part for messages that are not given text",
-                        "type": [
-                            "boolean",
-                            "null"
-                        ]
+                      "type": "boolean",
+                      "description": "whether or not to automatically generate a text part for messages that are not given text"
                     },
                     "auto_html": {
-                        "description": "whether or not to automatically generate an HTML part for messages that are not given HTML",
-                        "type": [
-                            "boolean",
-                            "null"
-                        ]
+                      "type": "boolean",
+                      "description": "whether or not to automatically generate an HTML part for messages that are not given HTML"
                     },
                     "inline_css": {
-                        "description": "whether or not to automatically inline all CSS styles provided in the message HTML - only for HTML documents less than 256KB in size",
-                        "type": [
-                            "boolean",
-                            "null"
-                        ]
+                      "type": "boolean",
+                      "description": "whether or not to automatically inline all CSS styles provided in the message HTML - only for HTML documents less than 256KB in size"
                     },
                     "url_strip_qs": {
-                        "description": "whether or not to strip the query string from URLs when aggregating tracked URL data",
-                        "type": [
-                            "boolean",
-                            "null"
-                        ]
+                      "type": "boolean",
+                      "description": "whether or not to strip the query string from URLs when aggregating tracked URL data"
                     },
                     "preserve_recipients": {
-                        "description": "whether or not to expose all recipients in to \"To\" header for each email",
-                        "type": [
-                            "boolean",
-                            "null"
-                        ]
+                      "type": "boolean",
+                      "description": "whether or not to expose all recipients in to \"To\" header for each email"
                     },
                     "view_content_link": {
-                        "description": "set to false to remove content logging for sensitive emails",
-                        "type": [
-                            "boolean",
-                            "null"
-                        ]
+                      "type": "boolean",
+                      "description": "set to false to remove content logging for sensitive emails"
                     },
                     "bcc_address": {
-                        "description": "an optional address to receive an exact copy of each recipient's email",
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "format": "email"
+                      "type": "string",
+                      "description": "an optional address to receive an exact copy of each recipient's email",
+                      "format": "email"
                     },
                     "tracking_domain": {
-                        "description": "a custom domain to use for tracking opens and clicks instead of mandrillapp.com",
-                        "type": [
-                            "string",
-                            "null"
-                        ]
+                      "type": "string",
+                      "description": "a custom domain to use for tracking opens and clicks instead of mandrillapp.com"
                     },
                     "signing_domain": {
-                        "description": "a custom domain to use for SPF/DKIM signing instead of mandrill (for \"via\" or \"on behalf of\" in email clients)",
-                        "type": [
-                            "string",
-                            "null"
-                        ]
+                      "type": "string",
+                      "description": "a custom domain to use for SPF/DKIM signing instead of mandrill (for \"via\" or \"on behalf of\" in email clients)"
                     },
                     "return_path_domain": {
-                        "description": "a custom domain to use for the messages's return-path",
-                        "type": [
-                            "string",
-                            "null"
-                        ]
+                      "type": "string",
+                      "description": "a custom domain to use for the messages's return-path"
                     },
                     "merge": {
-                        "description": "whether to evaluate merge tags in the message. Will automatically be set to true if either merge_vars or global_merge_vars are provided.",
-                        "type": [
-                            "boolean",
-                            "null"
-                        ]
+                      "type": "boolean",
+                      "description": "whether to evaluate merge tags in the message. Will automatically be set to true if either merge_vars or global_merge_vars are provided."
                     },
                     "merge_language": {
-                        "description": "the merge tag language to use when evaluating merge tags, either mailchimp or handlebars Possible values: \"mailchimp\" or \"handlebars\".",
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "default": "mailchimp",
-                        "enum": [
-                            "mailchimp",
-                            "handlebars"
-                        ]
+                      "type": "string",
+                      "description": "the merge tag language to use when evaluating merge tags, either mailchimp or handlebars",
+                      "enum": ["mailchimp", "handlebars"]
                     },
                     "global_merge_vars": {
-                        "description": "global merge variables to use for all recipients. You can override these per recipient.",
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/MergeVar"
+                      "type": "array",
+                      "description": "global merge variables to use for all recipients. You can override these per recipient.",
+                      "items": {
+                        "type": "object",
+                        "description": "a single global merge variable",
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "description": "the global merge variable's name. Merge variable names are case-insensitive and may not start with _"
+                          },
+                          "content": {
+                            "type": "string",
+                            "description": "the global merge variable's content"
+                          }
                         }
+                      }
                     },
                     "merge_vars": {
-                        "description": "per-recipient merge variables, which override global merge variables with the same name.",
-                        "type": "array",
-                        "items": {
-                            "properties": {
-                                "rcpt": {
-                                    "description": "Email address of the recipient",
-                                    "type": "string",
-                                    "format": "email",
-                                    "example": "recipient.email@example.com"
+                      "type": "array",
+                      "description": "per-recipient merge variables, which override global merge variables with the same name.",
+                      "items": {
+                        "type": "object",
+                        "description": "per-recipient merge variables",
+                        "required": ["rcpt"],
+                        "properties": {
+                          "rcpt": {
+                            "type": "string",
+                            "description": "the email address of the recipient that the merge variables should apply to",
+                            "format": "email"
+                          },
+                          "vars": {
+                            "type": "array",
+                            "description": "the recipient's merge variables",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "name": {
+                                  "type": "string",
+                                  "description": "the merge variable's name. Merge variable names are case-insensitive and may not start with _"
                                 },
-                                "vars": {
-                                    "description": "Recipient-specific merge variables",
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/MergeVar"
-                                    }
+                                "content": {
+                                  "type": "string",
+                                  "description": "the merge variable's content"
                                 }
-                            },
-                            "type": "object"
+                              }
+                            }
+                          }
                         }
+                      }
                     },
                     "tags": {
-                        "description": "an array of string to tag the message with. Stats are accumulated using tags, though we only store the first 100 we see, so this should not be unique or change frequently. Tags should be 50 characters or less. Any tags starting with an underscore are reserved for internal use and will cause errors.",
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
+                      "type": "array",
+                      "description": "an array of string to tag the message with. Stats are accumulated using tags, though we only store the first 100 we see, so this should not be unique or change frequently. Tags should be 50 characters or less. Any tags starting with an underscore are reserved for internal use and will cause errors.",
+                      "items": {
+                        "type": "string",
+                        "description": "a single tag - must not start with an underscore"
+                      }
                     },
                     "subaccount": {
-                        "description": "the unique id of a subaccount for this message - must already exist or will fail with an error",
-                        "type": [
-                            "string",
-                            "null"
-                        ]
+                      "type": "string",
+                      "description": "the unique id of a subaccount for this message - must already exist or will fail with an error"
                     },
                     "google_analytics_domains": {
-                        "description": "an array of strings indicating for which any matching URLs will automatically have Google Analytics parameters appended to their query string automatically.",
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
+                      "type": "array",
+                      "description": "an array of strings indicating for which any matching URLs will automatically have Google Analytics parameters appended to their query string automatically.",
+                      "items": {
+                        "type": "string"
+                      }
                     },
                     "google_analytics_campaign": {
-                        "description": "optional string indicating the value to set for the utm_campaign tracking parameter. If this isn't provided the email's from address will be used instead.",
-                        "oneOf": [
-                            {
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                }
-                            },
-                            {
-                                "type": "string"
-                            },
-                            {
-                                "type": "null"
-                            }
-                        ]
+                      "type": "string",
+                      "description": "optional string indicating the value to set for the utm_campaign tracking parameter. If this isn't provided the email's from address will be used instead.",
+                      "format": "email"
                     },
                     "metadata": {
-                        "description": "metadata an associative array of user metadata. Mandrill will store this metadata and make it available for retrieval. In addition, you can select up to 10 metadata fields to index and make searchable using the Mandrill search api.",
-                        "type": "object",
-                        "example": {
-                            "website": "www.example.com"
+                      "type": "object",
+                      "description": "metadata an associative array of user metadata. Mandrill will store this metadata and make it available for retrieval. In addition, you can select up to 10 metadata fields to index and make searchable using the Mandrill search api.",
+                      "properties": {
+                        "website": {
+                          "type": "string",
+                          "description": "a valid website url"
                         }
+                      }
                     },
                     "recipient_metadata": {
-                        "description": "Per-recipient metadata that will override the global values specified in the metadata parameter.",
-                        "type": "array",
-                        "items": {
+                      "type": "array",
+                      "description": "Per-recipient metadata that will override the global values specified in the metadata parameter.",
+                      "items": {
+                        "type": "object",
+                        "description": "metadata for a single recipient",
+                        "properties": {
+                          "rcpt": {
+                            "type": "string",
+                            "description": "the email address of the recipient that the metadata is associated with",
+                            "format": "email"
+                          },
+                          "values": {
+                            "type": "object",
+                            "description": "an associated array containing the recipient's unique metadata. If a key exists in both the per-recipient metadata and the global metadata, the per-recipient metadata will be used.",
                             "properties": {
-                                "rcpt": {
-                                    "type": "string",
-                                    "example": "recipient.email@example.com"
-                                },
-                                "values": {
-                                    "type": "object",
-                                    "example": {
-                                        "user_id": 123456
-                                    }
-                                }
-                            },
-                            "type": "object"
+                              "user_id": {
+                                "type": "integer",
+                                "description": ""
+                              }
+                            }
+                          }
                         }
+                      }
                     },
                     "attachments": {
-                        "description": "an array of supported attachments to add to the message",
-                        "type": "array",
-                        "items": {
-                            "properties": {
-                                "type": {
-                                    "description": "the MIME type of the attachment",
-                                    "type": "string",
-                                    "example": "text/plain"
-                                },
-                                "name": {
-                                    "description": "the file name of the attachment",
-                                    "type": "string",
-                                    "example": "myfile.txt"
-                                },
-                                "content": {
-                                    "description": "the content of the attachment as a base64-encoded string",
-                                    "type": "string"
-                                }
-                            },
-                            "type": "object"
+                      "type": "array",
+                      "description": "an array of supported attachments to add to the message",
+                      "items": {
+                        "type": "object",
+                        "description": "a single supported attachment",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "description": "the MIME type of the attachment"
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "the file name of the attachment"
+                          },
+                          "content": {
+                            "type": "string",
+                            "description": "the content of the attachment as a base64-encoded string"
+                          }
                         }
+                      }
                     },
                     "images": {
-                        "description": "an array of embedded images to add to the message",
-                        "type": "array",
-                        "items": {
-                            "properties": {
-                                "type": {
-                                    "description": "the MIME type of the image - must start with \"image/\"",
-                                    "type": "string",
-                                    "example": "image/png"
-                                },
+                      "type": "array",
+                      "description": "an array of embedded images to add to the message",
+                      "items": {
+                        "type": "object",
+                        "description": "a single embedded image",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "description": "the MIME type of the image - must start with \"image/\""
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "the Content ID of the image - use <img src=\"cid:THIS_VALUE\"> to reference the image in your HTML content"
+                          },
+                          "content": {
+                            "type": "string",
+                            "description": "the content of the image as a base64-encoded string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "async": {
+                  "type": "boolean",
+                  "description": "enable a background sending mode that is optimized for bulk sending. In async mode, messages/send will immediately return a status of \"queued\" for every recipient. To handle rejections when sending in async mode, set up a webhook for the 'reject' event. Defaults to false for messages with no more than 10 recipients; messages with more than 10 recipients are always sent asynchronously, regardless of the value of async."
+                },
+                "ip_pool": {
+                  "type": "string",
+                  "description": "the name of the dedicated ip pool that should be used to send the message. If you do not have any dedicated IPs, this parameter has no effect. If you specify a pool that does not exist, your default pool will be used instead."
+                },
+                "send_at": {
+                  "type": "string",
+                  "description": "when this message should be sent as a UTC timestamp in YYYY-MM-DD HH:MM:SS format. If you specify a time in the past, the message will be sent immediately; for future dates, you're limited to one year from the date of scheduling.",
+                  "format": "date-time"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "array",
+              "description": "an array of objects for each recipient containing the key \"email\" with the email address, and details of the message status for that recipient",
+              "items": {
+                "type": "object",
+                "description": "the sending results for a single recipient",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "the email address of the recipient"
+                  },
+                  "status": {
+                    "type": "string",
+                    "description": "the sending status of the recipient",
+                    "enum": [
+                      "sent",
+                      "queued",
+                      "scheduled",
+                      "rejected",
+                      "invalid"
+                    ]
+                  },
+                  "reject_reason": {
+                    "type": "string",
+                    "description": "the reason for the rejection if the recipient status is \"rejected\"",
+                    "enum": [
+                      "hard-bounce",
+                      "soft-bounce",
+                      "spam",
+                      "unsub",
+                      "custom",
+                      "invalid-sender",
+                      "invalid",
+                      "test-mode-limit",
+                      "unsigned",
+                      "rule"
+                    ]
+                  },
+                  "queued_reason": {
+                    "type": "string",
+                    "description": "the reason for the email being queued if the response status is \"queued\"",
+                    "enum": [
+                      "attachments",
+                      "multiple-recipients",
+                      "free-trial-sends-exhausted",
+                      "hourly-quota-exhausted",
+                      "monthly-limit-reached",
+                      "sending-paused",
+                      "sending-suspended",
+                      "account-suspended",
+                      "sending-backlogged"
+                    ]
+                  },
+                  "_id": {
+                    "type": "string",
+                    "description": "the message's unique id"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/messages/send-template": {
+      "post": {
+        "x-custom-config": {
+          "methodNameCamel": "sendTemplate",
+          "methodNameSnake": "send_template"
+        },
+        "summary": "Send using message template",
+        "description": "Send a new transactional message through the Transactional API using a template.",
+        "operationId": "postMessagesSendTemplate",
+        "tags": ["messages"],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "key",
+                "template_name",
+                "template_content",
+                "message"
+              ],
+              "properties": {
+                "key": {
+                  "type": "string",
+                  "description": "a valid api key"
+                },
+                "template_name": {
+                  "type": "string",
+                  "description": "the immutable slug of a template that exists in the user's account. Make sure you don't use the template name as this one might change."
+                },
+                "template_content": {
+                  "type": "array",
+                  "description": "an array of template content to send. Each item in the array should be a struct with two keys - name: the name of the content block to set the content for, and content: the actual content to put into the block",
+                  "items": {
+                    "type": "object",
+                    "description": "the injection of a single piece of content into a single editable region",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "description": "the name of the mc:edit editable region to inject into"
+                      },
+                      "content": {
+                        "type": "string",
+                        "description": "the content to inject"
+                      }
+                    }
+                  }
+                },
+                "message": {
+                  "type": "object",
+                  "description": "the other information on the message to send - same as /messages/send, but without the html content",
+                  "properties": {
+                    "html": {
+                      "type": "string",
+                      "description": "optional full HTML content to be sent if not in template"
+                    },
+                    "text": {
+                      "type": "string",
+                      "description": "optional full text content to be sent"
+                    },
+                    "subject": {
+                      "type": "string",
+                      "description": "the message subject"
+                    },
+                    "from_email": {
+                      "type": "string",
+                      "description": "the sender email address",
+                      "format": "email"
+                    },
+                    "from_name": {
+                      "type": "string",
+                      "description": "optional from name to be used"
+                    },
+                    "to": {
+                      "type": "array",
+                      "description": "an array of recipient information.",
+                      "items": {
+                        "type": "object",
+                        "description": "a single recipient's information",
+                        "required": ["email"],
+                        "properties": {
+                          "email": {
+                            "type": "string",
+                            "description": "the email address of the recipient",
+                            "format": "email"
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "the optional display name to use for the recipient"
+                          },
+                          "type": {
+                            "type": "string",
+                            "description": "the header type to use for the recipient, defaults to \"to\" if not provided",
+                            "enum": ["to", "cc", "bcc"]
+                          }
+                        }
+                      }
+                    },
+                    "headers": {
+                      "type": "object",
+                      "description": "optional extra headers to add to the message (most headers are allowed)"
+                    },
+                    "important": {
+                      "type": "boolean",
+                      "description": "whether or not this message is important, and should be delivered ahead of non-important messages"
+                    },
+                    "track_opens": {
+                      "type": "boolean",
+                      "description": "whether or not to turn on open tracking for the message"
+                    },
+                    "track_clicks": {
+                      "type": "boolean",
+                      "description": "whether or not to turn on click tracking for the message"
+                    },
+                    "auto_text": {
+                      "type": "boolean",
+                      "description": "whether or not to automatically generate a text part for messages that are not given text"
+                    },
+                    "auto_html": {
+                      "type": "boolean",
+                      "description": "whether or not to automatically generate an HTML part for messages that are not given HTML"
+                    },
+                    "inline_css": {
+                      "type": "boolean",
+                      "description": "whether or not to automatically inline all CSS styles provided in the message HTML - only for HTML documents less than 256KB in size"
+                    },
+                    "url_strip_qs": {
+                      "type": "boolean",
+                      "description": "whether or not to strip the query string from URLs when aggregating tracked URL data"
+                    },
+                    "preserve_recipients": {
+                      "type": "boolean",
+                      "description": "whether or not to expose all recipients in to \"To\" header for each email"
+                    },
+                    "view_content_link": {
+                      "type": "boolean",
+                      "description": "set to false to remove content logging for sensitive emails"
+                    },
+                    "bcc_address": {
+                      "type": "string",
+                      "description": "an optional address to receive an exact copy of each recipient's email",
+                      "format": "email"
+                    },
+                    "tracking_domain": {
+                      "type": "string",
+                      "description": "a custom domain to use for tracking opens and clicks instead of mandrillapp.com"
+                    },
+                    "signing_domain": {
+                      "type": "string",
+                      "description": "a custom domain to use for SPF/DKIM signing instead of mandrill (for \"via\" or \"on behalf of\" in email clients)"
+                    },
+                    "return_path_domain": {
+                      "type": "string",
+                      "description": "a custom domain to use for the messages's return-path"
+                    },
+                    "merge": {
+                      "type": "boolean",
+                      "description": "whether to evaluate merge tags in the message. Will automatically be set to true if either merge_vars or global_merge_vars are provided."
+                    },
+                    "merge_language": {
+                      "type": "string",
+                      "description": "the merge tag language to use when evaluating merge tags, either mailchimp or handlebars",
+                      "enum": ["mailchimp", "handlebars"]
+                    },
+                    "global_merge_vars": {
+                      "type": "array",
+                      "description": "global merge variables to use for all recipients. You can override these per recipient.",
+                      "items": {
+                        "type": "object",
+                        "description": "a single global merge variable",
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "description": "the global merge variable's name. Merge variable names are case-insensitive and may not start with _"
+                          },
+                          "content": {
+                            "type": "string",
+                            "description": "the global merge variable's content"
+                          }
+                        }
+                      }
+                    },
+                    "merge_vars": {
+                      "type": "array",
+                      "description": "per-recipient merge variables, which override global merge variables with the same name.",
+                      "items": {
+                        "type": "object",
+                        "description": "per-recipient merge variables",
+                        "required": ["rcpt"],
+                        "properties": {
+                          "rcpt": {
+                            "type": "string",
+                            "description": "the email address of the recipient that the merge variables should apply to",
+                            "format": "email"
+                          },
+                          "vars": {
+                            "type": "array",
+                            "description": "the recipient's merge variables",
+                            "items": {
+                              "type": "object",
+                              "properties": {
                                 "name": {
-                                    "description": "the content ID of the image - used <img src=\"cid:THIS_VALUE\"> to reference the image in your HTML content",
-                                    "type": "string"
+                                  "type": "string",
+                                  "description": "the merge variable's name. Merge variable names are case-insensitive and may not start with _"
                                 },
                                 "content": {
-                                    "description": "the content of the image as a base64-encoded string",
-                                    "type": "string"
+                                  "type": "string",
+                                  "description": "the merge variable's content"
                                 }
-                            },
-                            "type": "object"
+                              }
+                            }
+                          }
                         }
-                    }
-                },
-                "type": "object"
-            },
-            "AddWebhookRequest": {
-                "description": "Request payload for creating a new webhook.",
-                "type": "object",
-                "example": {
-                    "key": "ONzNrsmbtNXoIKyfPmjnig",
-                    "url": "https://example.com/webhook",
-                    "description": "My webhook for tracking email events",
-                    "events": [
-                        "send",
-                        "delivered",
-                        "hard_bounce",
-                        "soft_bounce",
-                        "open",
-                        "click",
-                        "spam",
-                        "unsub",
-                        "reject"
-                    ]
-                },
-                "allOf": [
-                    {
-                        "$ref": "#/components/schemas/ApiKey"
+                      }
                     },
-                    {
-                        "required": [
-                            "url"
-                        ],
-                        "type": "object"
-                    },
-                    {
-                        "properties": {
-                            "url": {
-                                "description": "The URL to POST batches of events",
-                                "type": "string",
-                                "format": "uri"
-                            },
-                            "description": {
-                                "description": "An optional description of the webhook",
-                                "type": [
-                                    "string",
-                                    "null"
-                                ]
-                            },
-                            "events": {
-                                "description": "Optional list of event types that will trigger the webhook",
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                },
-                                "example": [
-                                    "send",
-                                    "delivered",
-                                    "hard_bounce",
-                                    "soft_bounce",
-                                    "open",
-                                    "click",
-                                    "spam",
-                                    "unsub",
-                                    "reject"
-                                ]
-                            }
-                        },
-                        "type": "object"
-                    }
-                ]
-            },
-            "UpdateWebhookRequest": {
-                "description": "Request payload for updating an existing webhook.",
-                "type": "object",
-                "example": {
-                    "key": "ONzNrsmbtNXoIKyfPmjnig",
-                    "id": 12345,
-                    "url": "https://example.com/webhook",
-                    "description": "Updated webhook description",
-                    "events": [
-                        "send",
-                        "delivered",
-                        "hard_bounce",
-                        "soft_bounce",
-                        "open",
-                        "click",
-                        "spam",
-                        "unsub",
-                        "reject"
-                    ]
-                },
-                "allOf": [
-                    {
-                        "$ref": "#/components/schemas/ApiKey"
-                    },
-                    {
-                        "required": [
-                            "id",
-                            "url"
-                        ],
-                        "type": "object"
-                    },
-                    {
-                        "properties": {
-                            "id": {
-                                "description": "The unique identifier of a webhook belonging to this account",
-                                "type": "integer"
-                            },
-                            "url": {
-                                "description": "The URL to POST batches of events",
-                                "type": "string",
-                                "format": "uri"
-                            },
-                            "description": {
-                                "description": "An optional description of the webhook",
-                                "type": [
-                                    "string",
-                                    "null"
-                                ]
-                            },
-                            "events": {
-                                "description": "Optional list of event types that will trigger the webhook",
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                },
-                                "example": [
-                                    "send",
-                                    "delivered",
-                                    "hard_bounce",
-                                    "soft_bounce",
-                                    "open",
-                                    "click",
-                                    "spam",
-                                    "unsub",
-                                    "reject"
-                                ]
-                            }
-                        },
-                        "type": "object"
-                    }
-                ]
-            },
-            "WebhookIdRequest": {
-                "description": "Request payload for webhook operations requiring only ID.",
-                "type": "object",
-                "example": {
-                    "key": "ONzNrsmbtNXoIKyfPmjnig",
-                    "id": 12345
-                },
-                "allOf": [
-                    {
-                        "$ref": "#/components/schemas/ApiKey"
-                    },
-                    {
-                        "required": [
-                            "id"
-                        ],
-                        "type": "object"
-                    },
-                    {
-                        "properties": {
-                            "id": {
-                                "description": "The unique identifier of a webhook belonging to this account",
-                                "type": "integer"
-                            }
-                        },
-                        "type": "object"
-                    }
-                ]
-            },
-            "MessagesSendResponse": {
-                "title": "MessagesSendResponse",
-                "description": "The sending results for a single recipient",
-                "required": [
-                    "email",
-                    "status",
-                    "_id"
-                ],
-                "properties": {
-                    "email": {
-                        "description": "The email address of the recipient",
+                    "tags": {
+                      "type": "array",
+                      "description": "an array of string to tag the message with. Stats are accumulated using tags, though we only store the first 100 we see, so this should not be unique or change frequently. Tags should be 50 characters or less. Any tags starting with an underscore are reserved for internal use and will cause errors.",
+                      "items": {
                         "type": "string",
-                        "format": "email",
-                        "example": "recipient.email@example.com"
+                        "description": "a single tag - must not start with an underscore"
+                      }
                     },
-                    "status": {
-                        "description": "The sending status of the recipient",
-                        "type": "string",
-                        "enum": [
-                            "sent",
-                            "queued",
-                            "scheduled",
-                            "rejected",
-                            "invalid"
-                        ]
+                    "subaccount": {
+                      "type": "string",
+                      "description": "the unique id of a subaccount for this message - must already exist or will fail with an error"
                     },
-                    "reject_reason": {
-                        "description": "The reason for the rejection if the recipient status is rejected",
-                        "type": "string",
-                        "enum": [
-                            "hard-bounce",
-                            "soft-bounce",
-                            "spam",
-                            "unsub",
-                            "custom",
-                            "invalid-sender",
-                            "invalid",
-                            "test-mode-limit",
-                            "unsigned",
-                            "rule"
-                        ],
-                        "example": "hard-bounce"
-                    },
-                    "queued_reason": {
-                        "description": "The reason for the queuing if the recipient status is queued",
-                        "type": "string",
-                        "enum": [
-                            "attachments",
-                            "multiple-recipients",
-                            "free-trial-sends-exhausted",
-                            "hourly-quota-exhausted",
-                            "monthly-limit-reached",
-                            "sending-paused",
-                            "sending-suspended",
-                            "account-suspended",
-                            "sending-backlogged"
-                        ]
-                    },
-                    "_id": {
-                        "description": "The message's unique id",
+                    "google_analytics_domains": {
+                      "type": "array",
+                      "description": "an array of strings indicating for which any matching URLs will automatically have Google Analytics parameters appended to their query string automatically.",
+                      "items": {
                         "type": "string"
-                    }
-                },
-                "type": "object"
-            },
-            "Sender": {
-                "description": "Sender email address and aggregate sending statistics",
-                "required": [
-                    "address",
-                    "created_at",
-                    "sent",
-                    "hard_bounces",
-                    "soft_bounces",
-                    "rejects",
-                    "complaints",
-                    "unsubs",
-                    "opens",
-                    "clicks",
-                    "unique_opens",
-                    "unique_clicks"
-                ],
-                "properties": {
-                    "address": {
-                        "description": "Sender email address",
-                        "type": "string",
-                        "format": "email",
-                        "example": "sender.example@mandrillapp.com"
+                      }
                     },
-                    "created_at": {
-                        "description": "Date first seen by Mandrill in UTC YYYY-MM-DD HH:MM:SS format",
-                        "type": "string",
-                        "example": "2013-01-01 15:30:27"
+                    "google_analytics_campaign": {
+                      "type": "string",
+                      "description": "optional string indicating the value to set for the utm_campaign tracking parameter. If this isn't provided the email's from address will be used instead.",
+                      "format": "email"
                     },
-                    "sent": {
-                        "description": "Total number of messages sent by this sender",
-                        "type": "integer"
+                    "metadata": {
+                      "type": "object",
+                      "description": "metadata an associative array of user metadata. Mandrill will store this metadata and make it available for retrieval. In addition, you can select up to 10 metadata fields to index and make searchable using the Mandrill search api.",
+                      "properties": {
+                        "website": {
+                          "type": "string",
+                          "description": "a valid website url"
+                        }
+                      }
                     },
-                    "hard_bounces": {
-                        "description": "Total number of hard bounces by this sender",
-                        "type": "integer"
-                    },
-                    "soft_bounces": {
-                        "description": "Total number of soft bounces by this sender",
-                        "type": "integer"
-                    },
-                    "rejects": {
-                        "description": "Total number of rejected messages by this sender",
-                        "type": "integer"
-                    },
-                    "complaints": {
-                        "description": "Total number of spam complaints for this sender",
-                        "type": "integer"
-                    },
-                    "unsubs": {
-                        "description": "Total number of unsubscribe requests for this sender",
-                        "type": "integer"
-                    },
-                    "opens": {
-                        "description": "Total number of times messages by this sender have been opened",
-                        "type": "integer"
-                    },
-                    "clicks": {
-                        "description": "Total number of tracked URL clicks by this sender",
-                        "type": "integer"
-                    },
-                    "unique_opens": {
-                        "description": "Number of unique opens for emails sent by this sender",
-                        "type": "integer"
-                    },
-                    "unique_clicks": {
-                        "description": "Number of unique clicks for emails sent by this sender",
-                        "type": "integer"
-                    }
-                },
-                "type": "object"
-            },
-            "User": {
-                "description": "Authenticated user account information including sending stats",
-                "required": [
-                    "username",
-                    "created_at",
-                    "public_id",
-                    "reputation",
-                    "hourly_quota",
-                    "backlog",
-                    "stats"
-                ],
-                "properties": {
-                    "username": {
-                        "description": "Username for SMTP authentication",
-                        "type": "string"
-                    },
-                    "created_at": {
-                        "description": "Account creation date in UTC YYYY-MM-DD HH:MM:SS format",
-                        "type": "string",
-                        "example": "2013-01-01 15:30:27"
-                    },
-                    "public_id": {
-                        "description": "Unique permanent identifier for this user",
-                        "type": "string"
-                    },
-                    "reputation": {
-                        "description": "User reputation on scale 0-100, 75+ is generally good",
-                        "type": "integer",
-                        "maximum": 100,
-                        "minimum": 0
-                    },
-                    "hourly_quota": {
-                        "description": "Maximum emails delivered per hour",
-                        "type": "integer"
-                    },
-                    "backlog": {
-                        "description": "Number of emails queued due to quota limits",
-                        "type": "integer"
-                    },
-                    "stats": {
-                        "description": "Aggregate sending statistics across different time windows",
-                        "required": [
-                            "today",
-                            "last_7_days",
-                            "last_30_days",
-                            "last_60_days",
-                            "last_90_days",
-                            "all_time"
-                        ],
+                    "recipient_metadata": {
+                      "type": "array",
+                      "description": "Per-recipient metadata that will override the global values specified in the metadata parameter.",
+                      "items": {
+                        "type": "object",
+                        "description": "metadata for a single recipient",
                         "properties": {
-                            "today": {
-                                "$ref": "#/components/schemas/StatsWindow"
-                            },
-                            "last_7_days": {
-                                "$ref": "#/components/schemas/StatsWindow"
-                            },
-                            "last_30_days": {
-                                "$ref": "#/components/schemas/StatsWindow"
-                            },
-                            "last_60_days": {
-                                "$ref": "#/components/schemas/StatsWindow"
-                            },
-                            "last_90_days": {
-                                "$ref": "#/components/schemas/StatsWindow"
-                            },
-                            "all_time": {
-                                "$ref": "#/components/schemas/StatsWindow"
+                          "rcpt": {
+                            "type": "string",
+                            "description": "the email address of the recipient that the metadata is associated with",
+                            "format": "email"
+                          },
+                          "values": {
+                            "type": "object",
+                            "description": "an associated array containing the recipient's unique metadata. If a key exists in both the per-recipient metadata and the global metadata, the per-recipient metadata will be used.",
+                            "properties": {
+                              "user_id": {
+                                "type": "integer",
+                                "description": ""
+                              }
                             }
-                        },
-                        "type": "object"
+                          }
+                        }
+                      }
+                    },
+                    "attachments": {
+                      "type": "array",
+                      "description": "an array of supported attachments to add to the message",
+                      "items": {
+                        "type": "object",
+                        "description": "a single supported attachment",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "description": "the MIME type of the attachment"
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "the file name of the attachment"
+                          },
+                          "content": {
+                            "type": "string",
+                            "description": "the content of the attachment as a base64-encoded string"
+                          }
+                        }
+                      }
+                    },
+                    "images": {
+                      "type": "array",
+                      "description": "an array of embedded images to add to the message",
+                      "items": {
+                        "type": "object",
+                        "description": "a single embedded image",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "description": "the MIME type of the image - must start with \"image/\""
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "the Content ID of the image - use <img src=\"cid:THIS_VALUE\"> to reference the image in your HTML content"
+                          },
+                          "content": {
+                            "type": "string",
+                            "description": "the content of the image as a base64-encoded string"
+                          }
+                        }
+                      }
                     }
+                  }
                 },
-                "type": "object"
-            },
-            "WebhookResponse": {
-                "description": "Webhook configuration for receiving event notifications.",
-                "required": [
-                    "id",
-                    "url",
-                    "created_at",
-                    "batches_sent",
-                    "events_sent",
-                    "events"
-                ],
-                "properties": {
-                    "id": {
-                        "description": "Unique identifier for the webhook",
-                        "type": "integer"
-                    },
-                    "url": {
-                        "description": "The URL where webhook events will be posted",
-                        "type": "string",
-                        "format": "uri"
-                    },
-                    "auth_key": {
-                        "description": "The key used for webhook authentication",
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "example": "gplJ8yWptFTqCoq5S1SHPA"
-                    },
-                    "description": {
-                        "description": "Optional description of the webhook",
-                        "type": [
-                            "string",
-                            "null"
-                        ]
-                    },
-                    "events": {
-                        "description": "Array of event types that will trigger the webhook",
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        },
-                        "example": [
-                            "send",
-                            "delivered",
-                            "deferral",
-                            "hard_bounce",
-                            "soft_bounce",
-                            "open",
-                            "click",
-                            "spam",
-                            "unsub",
-                            "reject",
-                            "blacklist",
-                            "whitelist",
-                            "sms"
-                        ]
-                    },
-                    "created_at": {
-                        "description": "When the webhook was created (UTC YYYY-MM-DD HH:MM:SS.microseconds)",
-                        "type": "string",
-                        "pattern": "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d+$"
-                    },
-                    "last_sent_at": {
-                        "description": "When the last event was sent to this webhook (UTC YYYY-MM-DD HH:MM:SS)",
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "pattern": "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$"
-                    },
-                    "batches_sent": {
-                        "description": "Number of batches sent to this webhook",
-                        "type": "integer"
-                    },
-                    "events_sent": {
-                        "description": "Total number of events sent to this webhook",
-                        "type": "integer"
-                    },
-                    "last_error": {
-                        "description": "Last error message received when attempting to call the webhook",
-                        "type": [
-                            "string",
-                            "null"
-                        ]
-                    }
+                "async": {
+                  "type": "boolean",
+                  "description": "enable a background sending mode that is optimized for bulk sending. In async mode, messages/send will immediately return a status of \"queued\" for every recipient. To handle rejections when sending in async mode, set up a webhook for the 'reject' event. Defaults to false for messages with no more than 10 recipients; messages with more than 10 recipients are always sent asynchronously, regardless of the value of async."
                 },
-                "type": "object",
-                "example": {
-                    "id": 12345,
-                    "url": "https://example.com/webhook",
-                    "description": "Webhook for tracking email events",
-                    "auth_key": "gplJ8yWptFTqCoq5S1SHPA",
-                    "events": [
-                        "send",
-                        "delivered",
-                        "deferral",
-                        "hard_bounce",
-                        "soft_bounce",
-                        "open",
-                        "click",
-                        "spam",
-                        "unsub",
-                        "reject",
-                        "blacklist",
-                        "whitelist",
-                        "sms"
-                    ],
-                    "created_at": "2013-01-01 15:30:27.123456",
-                    "last_sent_at": "2013-01-01 15:30:49",
-                    "batches_sent": 42,
-                    "events_sent": 1365,
-                    "last_error": null
+                "ip_pool": {
+                  "type": "string",
+                  "description": "the name of the dedicated ip pool that should be used to send the message. If you do not have any dedicated IPs, this parameter has no effect. If you specify a pool that does not exist, your default pool will be used instead."
+                },
+                "send_at": {
+                  "type": "string",
+                  "description": "when this message should be sent as a UTC timestamp in YYYY-MM-DD HH:MM:SS format. If you specify a time in the past, the message will be sent immediately; for future dates, you're limited to one year from the date of scheduling.",
+                  "format": "date-time"
                 }
+              }
             }
-        }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "array",
+              "description": "an array of objects for each recipient containing the key \"email\" with the email address, and details of the message status for that recipient",
+              "items": {
+                "type": "object",
+                "description": "the sending results for a single recipient",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "the email address of the recipient"
+                  },
+                  "status": {
+                    "type": "string",
+                    "description": "the sending status of the recipient",
+                    "enum": ["sent", "queued", "rejected", "invalid"]
+                  },
+                  "reject_reason": {
+                    "type": "string",
+                    "description": "the reason for the rejection if the recipient status is \"rejected\"",
+                    "enum": [
+                      "hard-bounce",
+                      "soft-bounce",
+                      "spam",
+                      "unsub",
+                      "custom",
+                      "invalid-sender",
+                      "invalid",
+                      "test-mode-limit",
+                      "unsigned",
+                      "rule"
+                    ]
+                  },
+                  "queued_reason": {
+                    "type": "string",
+                    "description": "the reason for the email being queued if the response status is \"queued\"",
+                    "enum": [
+                      "attachments",
+                      "multiple-recipients",
+                      "free-trial-sends-exhausted",
+                      "hourly-quota-exhausted",
+                      "monthly-limit-reached",
+                      "sending-paused",
+                      "sending-suspended",
+                      "account-suspended",
+                      "sending-backlogged"
+                    ]
+                  },
+                  "_id": {
+                    "type": "string",
+                    "description": "the message's unique id"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
     },
-    "tags": [
-        {
-            "name": "Users",
-            "description": "Operations related to user account and credentials"
+    "/messages/search": {
+      "post": {
+        "x-custom-config": {
+          "methodNameCamel": "search",
+          "methodNameSnake": "search"
         },
-        {
-            "name": "Webhooks",
-            "description": "Operations for managing webhook endpoints and event subscriptions"
+        "summary": "Search messages by date",
+        "description": "Search recently sent messages and optionally narrow by date range, tags, senders, and API keys. If no date range is specified, results within the last 7 days are returned. This method may be called up to 20 times per minute. If you need the data more often, you can use /messages/info.json to get the information for a single message, or webhooks to push activity to your own application for querying.",
+        "operationId": "postMessagesSearch",
+        "tags": ["messages"],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": ["key"],
+              "properties": {
+                "key": {
+                  "type": "string",
+                  "description": "a valid api key"
+                },
+                "query": {
+                  "type": "string",
+                  "description": "search terms to find matching messages"
+                },
+                "date_from": {
+                  "type": "string",
+                  "description": "start date",
+                  "format": "date-time"
+                },
+                "date_to": {
+                  "type": "string",
+                  "description": "end date",
+                  "format": "date-time"
+                },
+                "tags": {
+                  "type": "array",
+                  "description": "an array of tag names to narrow the search to, will return messages that contain ANY of the tags",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "senders": {
+                  "type": "array",
+                  "description": "an array of sender addresses to narrow the search to, will return messages sent by ANY of the senders",
+                  "items": {
+                    "type": "string",
+                    "description": "a single sender email address",
+                    "format": "email"
+                  }
+                },
+                "api_keys": {
+                  "type": "array",
+                  "description": "an array of API keys to narrow the search to, will return messages sent by ANY of the keys",
+                  "items": {
+                    "type": "string",
+                    "description": "a single API key"
+                  }
+                },
+                "limit": {
+                  "type": "integer",
+                  "description": "the maximum number of results to return, defaults to 100, 1000 is the maximum",
+                  "minimum": 100,
+                  "maximum": 1000
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "array",
+              "description": "an array of objects for each matching message",
+              "items": {
+                "type": "object",
+                "description": "the information for a single matching message",
+                "properties": {
+                  "ts": {
+                    "type": "integer",
+                    "description": "the Unix timestamp from when this message was sent"
+                  },
+                  "_id": {
+                    "type": "string",
+                    "description": "the message's unique id"
+                  },
+                  "sender": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "the email address of the sender"
+                  },
+                  "template": {
+                    "type": "string",
+                    "description": "the unique name of the template used, if any"
+                  },
+                  "subject": {
+                    "type": "string",
+                    "description": "the message's subject line"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "the recipient email address"
+                  },
+                  "tags": {
+                    "type": "array",
+                    "description": "list of tags on this message",
+                    "items": {
+                      "type": "string",
+                      "description": "individual tag on this message"
+                    }
+                  },
+                  "opens": {
+                    "type": "integer",
+                    "description": "how many times has this message been opened"
+                  },
+                  "opens_detail": {
+                    "type": "array",
+                    "description": "list of individual opens for the message",
+                    "items": {
+                      "type": "object",
+                      "description": "information on an individual open",
+                      "properties": {
+                        "ts": {
+                          "type": "integer",
+                          "description": "the unix timestamp from when the message was opened"
+                        },
+                        "ip": {
+                          "type": "string",
+                          "description": "the IP address that generated the open"
+                        },
+                        "location": {
+                          "type": "string",
+                          "description": "the approximate region and country that the opening IP is located"
+                        },
+                        "ua": {
+                          "type": "string",
+                          "description": "the email client or browser data of the open"
+                        }
+                      }
+                    }
+                  },
+                  "clicks": {
+                    "type": "integer",
+                    "description": "how many times has a link been clicked in this message"
+                  },
+                  "clicks_detail": {
+                    "type": "array",
+                    "description": "list of individual clicks for the message",
+                    "items": {
+                      "type": "object",
+                      "description": "information on an individual click",
+                      "properties": {
+                        "ts": {
+                          "type": "integer",
+                          "description": "the unix timestamp from when the message was clicked"
+                        },
+                        "url": {
+                          "type": "string",
+                          "description": "the URL that was clicked on"
+                        },
+                        "ip": {
+                          "type": "string",
+                          "description": "the IP address that generated the click"
+                        },
+                        "location": {
+                          "type": "string",
+                          "description": "the approximate region and country that the clicking IP is located"
+                        },
+                        "ua": {
+                          "type": "string",
+                          "description": "the email client or browser data of the click"
+                        }
+                      }
+                    }
+                  },
+                  "state": {
+                    "type": "string",
+                    "description": "sending status of this message",
+                    "enum": ["sent", "bounced", "rejected"]
+                  },
+                  "metadata": {
+                    "type": "object",
+                    "description": "any custom metadata provided when the message was sent"
+                  }
+                }
+              }
+            }
+          }
         },
-        {
-            "name": "Messages",
-            "description": "Messages"
-        }
-    ]
+        "deprecated": false
+      }
+    },
+    "/whitelists/delete": {
+      "post": {
+        "x-custom-config": {
+          "methodNameCamel": "delete",
+          "methodNameSnake": "delete"
+        },
+        "summary": "Remove email from allowlist",
+        "description": "Removes an email address from the allowlist.",
+        "operationId": "postWhitelistsDelete",
+        "tags": ["whitelists"],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": ["key", "email"],
+              "properties": {
+                "key": {
+                  "type": "string",
+                  "description": "a valid api key"
+                },
+                "email": {
+                  "type": "string",
+                  "description": "the email address to remove from the allowlist",
+                  "format": "email"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "description": "a status object containing the address and whether the deletion succeeded",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "description": "the email address that was removed from the denylist"
+                },
+                "deleted": {
+                  "type": "boolean",
+                  "description": "whether the address was deleted successfully"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    }
+  },
+  "definitions": {}
 }
