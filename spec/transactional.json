@@ -217,7 +217,8 @@
               "properties": {
                 "key": {
                   "type": "string",
-                  "description": "a valid api key"
+                  "description": "a valid api key",
+                  "example": "YOUR_API_KEY"
                 },
                 "message": {
                   "type": "object",
@@ -225,11 +226,13 @@
                   "properties": {
                     "html": {
                       "type": "string",
-                      "description": "the full HTML content to be sent"
+                      "description": "the full HTML content to be sent",
+                      "example": "<html><body><h1>Hello, World!</h1></body></html>"
                     },
                     "text": {
                       "type": "string",
-                      "description": "optional full text content to be sent"
+                      "description": "optional full text content to be sent",
+                      "example": "Hello, World!"
                     },
                     "subject": {
                       "type": "string",
@@ -521,7 +524,8 @@
                   "email": {
                     "type": "string",
                     "format": "email",
-                    "description": "the email address of the recipient"
+                    "description": "the email address of the recipient",
+                    "example": "recipient@example.com"
                   },
                   "status": {
                     "type": "string",
@@ -532,7 +536,8 @@
                       "scheduled",
                       "rejected",
                       "invalid"
-                    ]
+                    ],
+                    "example": "sent"
                   },
                   "reject_reason": {
                     "type": "string",
@@ -548,7 +553,8 @@
                       "test-mode-limit",
                       "unsigned",
                       "rule"
-                    ]
+                    ],
+                    "example": "hard-bounce"
                   },
                   "queued_reason": {
                     "type": "string",
@@ -563,11 +569,13 @@
                       "sending-suspended",
                       "account-suspended",
                       "sending-backlogged"
-                    ]
+                    ],
+                    "example": "multiple-recipients"
                   },
                   "_id": {
                     "type": "string",
-                    "description": "the message's unique id"
+                    "description": "the message's unique id",
+                    "example": "abc123abc123abc123abc123abc123"
                   }
                 }
               }
