@@ -3020,7 +3020,7 @@
           "methodNameCamel": "sendTemplate",
           "methodNameSnake": "send_template"
         },
-        "summary": "Send using message template",
+        "summary": "Send using message template too",
         "description": "Send a new transactional message through the Transactional API using a template.",
         "operationId": "postMessagesSendTemplate",
         "tags": ["messages"],
