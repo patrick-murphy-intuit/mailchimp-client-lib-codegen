@@ -57,8 +57,6 @@
         "description": "Send, schedule, or get information on your emails.",
         "paths": [
           "/messages/send",
-          "/messages/send-template-too",
-          "/messages/send-template-three",
           "/messages/search",
           "/messages/search-time-series",
           "/messages/info",
