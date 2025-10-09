@@ -57,7 +57,7 @@
         "description": "Send, schedule, or get information on your emails.",
         "paths": [
           "/messages/send",
-          "/messages/send-template",
+          "/messages/send-template-too",
           "/messages/search",
           "/messages/search-time-series",
           "/messages/info",
@@ -3014,7 +3014,7 @@
         "deprecated": false
       }
     },
-    "/messages/send-template": {
+    "/messages/send-template-too": {
       "post": {
         "x-custom-config": {
           "methodNameCamel": "sendTemplate",
