@@ -56,7 +56,7 @@
         "title": "Messages",
         "description": "Send, schedule, or get information on your emails.",
         "paths": [
-          "/messages/send",
+          "/messages/send"
         ]
       },
       "metadata": {
